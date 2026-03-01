@@ -2,9 +2,12 @@ name: Daily DevSync Update
 
 on:
   schedule:
-    # Runs at 00:00 UTC every day
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Allows you to manual trigger for testing
+    - cron: '30 2 * * *' # Example: Runs at 02:30 UTC
+  workflow_dispatch:
+
+# ADD THIS SECTION
+permissions:
+  contents: write
 
 jobs:
   automated_commit:
@@ -12,10 +15,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          # Ensures the token is used for the push
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: DevSync Task - 23f2004420@ds.study.iitm.ac.in
         run: |
-          date >> daily_log.txt
+          echo "Sync at $(date)" >> daily_log.txt
           git config --local user.email "23f2004420@ds.study.iitm.ac.in"
           git config --local user.name "DevSync Automation"
           git add daily_log.txt
